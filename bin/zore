@@ -1,42 +1,46 @@
 #!/usr/bin/env node
-console.log('call %s', process.argv[2]);
+const _ = require('lodash')
+const chalk = require('chalk')
+const semver = require('semver')
+const { error } = require('../lib/logs')
+const requiredVersion = require('../package.json').engines.node
+
+// 检测node版本是否满足
+function checkNodeVersion(wanted, id){
+	if (!semver.satisfies(process.version, wanted)) {
+		error(chalk.red(
+			'你使用的node版本是 ' + process.version + ', 但是' + id +
+			' 需要的版本 ' + wanted + '.\n 请升级你的node版本'
+		))
+		process.exit(1)
+	}
+}
+
+checkNodeVersion(requiredVersion, 'zore-cli')
+
+
 var program = require('commander');
 
+// 定义版本和参数选项
 program
-	.version('0.1.0')
-	.option('-C, --chdir <path>', 'change the working directory')
-	.option('-c, --config <path>', 'set config path. defaults to ./deploy.conf')
-	.option('-T, --no-tests', 'ignore test hook');
-
-program
-	.command('setup [env]')
-	.description('run setup commands for all envs')
-	.option("-s, --setup_mode [mode]", "Which setup mode to use")
-	.action(function(env, options){
-		var mode = options.setup_mode || "normal";
-		env = env || 'all';
-		console.log('setup for %s env(s) with %s mode', env, mode);
-	});
-
-program
-	.command('exec <cmd>')
-	.alias('ex')
-	.description('execute the given remote cmd')
-	.option("-e, --exec_mode <mode>", "Which exec mode to use")
-	.action(function(cmd, options){
-		console.log('exec "%s" using %s mode', cmd, options.exec_mode);
-	}).on('--help', function() {
-	console.log('  Examples:');
-	console.log();
-	console.log('    $ deploy exec sequential');
-	console.log('    $ deploy exec async');
-	console.log();
-});
-
-program
-	.command('*')
-	.action(function(env){
-		console.log('deploying "%s"', env);
-	});
-
+	.version('0.1.0', '-v, --version')
+	.option('-i, --init', 'init something')
+	.option('-g, --generate', 'generate something')
+	.option('-r, --remove', 'remove something')
 program.parse(process.argv);
+program
+	.command("init")
+	.description('初始化描述')
+	.action(function (options){
+	console.log(options)
+});
+program
+	.command("remove")
+	.description('描述')
+	.action(function (options){
+		console.log(options)
+	});
+if (_.isEmpty(program.parse(process.argv).args) && process.argv.length === 2) {
+	program.help();
+}
+
