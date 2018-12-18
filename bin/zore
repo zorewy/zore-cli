@@ -2,6 +2,7 @@
 const _ = require('lodash')
 const chalk = require('chalk')
 const path = require('path')
+const inquirer = require( 'inquirer' );
 const semver = require('semver')
 const { error, log } = require('../lib/logs')
 const requiredVersion = require('../package.json').engines.node
@@ -49,12 +50,23 @@ program
 	} );
 program
 	.command("init [name]")
-	.description('初始化描述')
+	.description( '安装环境到本地' )
 	.action(function (options, cmd){
-		console.log(options)
-		let projectPath = path.resolve(process.cwd());
-		let projectName = path.basename(projectPath);
-		console.log(`初始化项目 ${chalk.green(projectPath)} -- ${chalk.green(projectName)}`)
+		// console.log(options)
+		// let projectPath = path.resolve(process.cwd());
+		// let projectName = path.basename(projectPath);
+		// console.log(`初始化项目 ${chalk.green(projectPath)} -- ${chalk.green(projectName)}`)
+		let choices = [ 'aaa', 'bbb', 'ccc', 'dddd' ];
+		let questions = [ {
+			type: 'list',
+			name: 'repo',
+			message: '你想要安装哪个?',
+			choices
+		} ];
+		inquirer.prompt( questions )
+			.then( answers => {
+				console.log( answers ); // 输出最终的答案
+			} )
 });
 program
 	.command("remove")
@@ -62,6 +74,7 @@ program
 	.action(function (options){
 		console.log(options)
 	});
+console.log(program.args[0])
 if (_.isEmpty(program.parse(process.argv).args) && process.argv.length === 2) {
 	program.help();
 }

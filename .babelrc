@@ -1,12 +1,15 @@
 {
-	"presets": [
-		["env", {
-			"targets": {
-				"node": "current"
-			}
-		}]
-	],
-	"plugins": [
-		"transform-es2015-modules-commonjs"
-	]
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ]
+  ],
+  "plugins": [
+    "transform-es2015-modules-commonjs"
+  ]
 }
