@@ -1,81 +1,118 @@
 #!/usr/bin/env node
-const _ = require('lodash')
-const chalk = require('chalk')
-const path = require('path')
-const inquirer = require( 'inquirer' );
-const semver = require('semver')
+// const _ = require('lodash')
+// const chalk = require('chalk')
+// const path = require('path')
+// const inquirer = require( 'inquirer' );
+// const minimist = require('minimist')
+// const semver = require('semver')
 const { error, log } = require('../lib/logs')
-const requiredVersion = require('../package.json').engines.node
+// const { engines, version } = require('../package.json')
+//
+// // 检测node版本
+// function checkNodeVersion(wanted, id){
+// 	if (!semver.satisfies(process.version, wanted)) {
+// 		error(chalk.red(
+// 			'你使用的node版本是 ' + process.version + ', 但是' + id +
+// 			' 需要的版本 ' + wanted + '.\n 请升级你的node版本'
+// 		))
+// 		process.exit(1)
+// 	}
+// }
+//
+// checkNodeVersion(engines.node, 'zore-command')
+//
+//
+// var program = require('commander');
+//
+// // 定义版本和参数选项
+// program
+// 	.version(version, '-v, --version')
+// 	.option('-i, --init [name]', 'init something')
+// 	.option('-g, --generate', 'generate something')
+// 	.option('-r, --remove', 'remove something')
+// program.parse(process.argv);
+//
+// program
+// 	.command( 'list' ) //声明hi下有一个命令叫list
+// 	.description( 'list files in current working directory' ) //给出list这个命令的描述
+// 	.option( '-a, --all', 'Whether to display hidden files' ) //设置list这个命令的参数
+// 	.action( function ( options ) { //list命令的实现体
+// 		let fs = require( 'fs' );
+// 		//获取当前运行目录下的文件信息
+// 		fs.readdir( process.cwd(), function ( err, files ) {
+// 			let list = files;
+// 			if ( !options.all ) { //检查用户是否给了--all或者-a的参数，如果没有，则过滤掉那些以.开头的文件
+// 				list = files.filter( function ( file ) {
+// 					return file.indexOf( '.' ) !== 0;
+// 				} );
+// 			}
+// 			log( list.join( '\n\r' ) ); //控制台将所有文件名打印出来
+// 		} );
+// 	} );
+// program
+// 	.command("init [name]")
+// 	.description( '安装环境到本地' )
+// 	.action(function (options, cmd){
+// 		// console.log(options)
+// 		// let projectPath = path.resolve(process.cwd());
+// 		// let projectName = path.basename(projectPath);
+// 		// console.log(`初始化项目 ${chalk.green(projectPath)} -- ${chalk.green(projectName)}`)
+// 		let choices = [ 'aaa', 'bbb', 'ccc', 'dddd' ];
+// 		let questions = [ {
+// 			type: 'list',
+// 			name: 'repo',
+// 			message: '你想要安装哪个?',
+// 			choices
+// 		} ];
+// 		inquirer.prompt( questions )
+// 			.then( answers => {
+// 				console.log( answers ); // 输出最终的答案
+// 			} )
+// });
+// program
+// 	.command("remove")
+// 	.description('描述')
+// 	.action(function (options){
+// 		console.log(options)
+// 	});
+// console.log(program.args[0])
+// if (_.isEmpty(program.parse(process.argv).args) && process.argv.length === 2) {
+// 	program.help();
+// }
 
-// 检测node版本
-function checkNodeVersion(wanted, id){
-	if (!semver.satisfies(process.version, wanted)) {
-		error(chalk.red(
-			'你使用的node版本是 ' + process.version + ', 但是' + id +
-			' 需要的版本 ' + wanted + '.\n 请升级你的node版本'
-		))
-		process.exit(1)
-	}
+const minimist = require('minimist')
+// const error = require('./utils/error')
+
+const args = minimist(process.argv.slice(2))
+
+let cmd = args._[0] || 'help'
+
+if (args.version || args.v) {
+	cmd = 'version'
 }
 
-checkNodeVersion(requiredVersion, 'zore-cli')
-
-
-var program = require('commander');
-
-// 定义版本和参数选项
-program
-	.version('0.1.0', '-v, --version')
-	.option('-i, --init [name]', 'init something')
-	.option('-g, --generate', 'generate something')
-	.option('-r, --remove', 'remove something')
-program.parse(process.argv);
-
-program
-	.command( 'list' ) //声明hi下有一个命令叫list
-	.description( 'list files in current working directory' ) //给出list这个命令的描述
-	.option( '-a, --all', 'Whether to display hidden files' ) //设置list这个命令的参数
-	.action( function ( options ) { //list命令的实现体
-		let fs = require( 'fs' );
-		//获取当前运行目录下的文件信息
-		fs.readdir( process.cwd(), function ( err, files ) {
-			let list = files;
-			if ( !options.all ) { //检查用户是否给了--all或者-a的参数，如果没有，则过滤掉那些以.开头的文件
-				list = files.filter( function ( file ) {
-					return file.indexOf( '.' ) !== 0;
-				} );
-			}
-			log( list.join( '\n\r' ) ); //控制台将所有文件名打印出来
-		} );
-	} );
-program
-	.command("init [name]")
-	.description( '安装环境到本地' )
-	.action(function (options, cmd){
-		// console.log(options)
-		// let projectPath = path.resolve(process.cwd());
-		// let projectName = path.basename(projectPath);
-		// console.log(`初始化项目 ${chalk.green(projectPath)} -- ${chalk.green(projectName)}`)
-		let choices = [ 'aaa', 'bbb', 'ccc', 'dddd' ];
-		let questions = [ {
-			type: 'list',
-			name: 'repo',
-			message: '你想要安装哪个?',
-			choices
-		} ];
-		inquirer.prompt( questions )
-			.then( answers => {
-				console.log( answers ); // 输出最终的答案
-			} )
-});
-program
-	.command("remove")
-	.description('描述')
-	.action(function (options){
-		console.log(options)
-	});
-console.log(program.args[0])
-if (_.isEmpty(program.parse(process.argv).args) && process.argv.length === 2) {
-	program.help();
+if (args.help || args.h) {
+	cmd = 'help'
 }
 
+switch (cmd) {
+	case 'init':
+		require('../command/init')(args)
+		break
+
+	case 'list':
+		require('../command/list')(args)
+		break
+
+	case 'version':
+		require('../command/version')(args)
+		break
+
+	case 'help':
+		require('../command/help')(args)
+		break
+
+	default:
+		error(`"${cmd}" is not a valid command!`)
+		break
+}

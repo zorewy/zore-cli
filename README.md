@@ -13,6 +13,13 @@
 	└─install  -i     # 开发目录
 	└─help -h         # 开发目录
 
+├─选择流程           # 初始化流程
+	├─模板选择         # 模板选择 目录
+	└─simple-template  # 简单的模板
+	└─react-template   # react全家桶模板
+	└─vue-template     # vue全家桶模板
+	└─diy-template     # 自定义模板
+
 
 Option(): 初始化自定义参数对象，设置“关键字”和“描述”
 Command(): 初始化命令行参数对象，直接获得命令行输入
