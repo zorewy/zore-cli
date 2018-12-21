@@ -5,22 +5,38 @@
  */
 const inquirer = require( 'inquirer' )
 const fs = require( 'fs' )
+const path = require( 'path' )
+const chalk = require('chalk')
 const axios = require( 'axios' )
 const ora = require( 'ora' )
 const handlebars = require( 'handlebars' )
+const { error, log } = require('../lib/logs')
 // const shell = require('shelljs')
 const exec = require('child_process').exec
+const {renderTemplateFiles, makeDir} = require('./../lib/generator')
 const download = require('download-git-repo')
+const cliPath =path.join(__dirname, '../')
 module.exports = async (args) => {
-	// console.log(args)
 	let choices = [ 'webpack-simple-template', 'webpack-react-template', 'webpack-vue-template', 'diy-template'];
 	const template = await inquirer.prompt([{ type: 'list', name: 'name', message: '请选择你需要的版本?', choices }])
-
+	const spinner = ora('正在处理模板...')
 	if (template.name === 'diy-template') {
 		// 自定义
-		await inquirer.prompt([{ type: 'checkbox', name: 'name', message: '请选择你需要的依赖?', choices }])
+		spinner.start()
+		const tplPath = `${cliPath}/tpl`;
+		const meta = {
+			name : 'Example',
+			description: 'Example',
+			author: 'Example',
+			names: 'Example',
+		}
+		makeDir(`./${args._[1]}`)
+
+		// await inquirer.prompt([{ type: 'checkbox', name: 'name', message: '请选择你需要的依赖?', choices }])
+		console.log(meta, tplPath, `${args._[1]}`)
+		// renderTemplateFiles(meta, tplPath, `${args._[1]}`)
+		spinner.succeed('模板生成--成功')
 	} else {
-		const spinner = ora('正在下载模板...')
 		let projectName = template.name
 		spinner.start()
 		download('https://github.com:zorewy/webpack-template#master', projectName,{clone: true}, (err) => {
@@ -29,48 +45,67 @@ module.exports = async (args) => {
 				spinner.fail();
 				// console.log(symbols.error, chalk.red(err))
 			}else{
-					let name = template.name
-				const meta = {
-					name,
-					description: '213213213',
-					author: '21321321'
-				}
-				const fileName = `${name}/package.json`;
-				const content = fs.readFileSync(fileName).toString();
-				console.log(content)
-				const result = handlebars.compile(content)({
-					"name" : 'sadsad',
-					description: 'sadsadsassadsad'
-				});
-				console.log(result)
-				fs.writeFileSync(fileName, result);
-				console.log(content)
-				console.log(err ? 'Error' : 'Success')
 				spinner.succeed('下载成功')
 			}
 		})
-		// download('https://github.com/zorewy/webpack-template#master', template.name, {clone: true}, (err) => {
-		// 	let name = template.name
-		// 	const meta = {
-		// 		name,
-		// 		description: '213213213',
-		// 		author: '21321321'
-		// 	}
-		// 	const fileName = `${name}/package.json`;
-		// 	const content = fs.readFileSync(fileName).toString();
-		// 	const result = handlebars.compile(content)(meta);
-		// 	fs.writeFileSync(fileName, result);
-		// 	console.log(err ? 'Error' : 'Success')
-		// })
 	}
 
-	// inquirer.prompt([
-	// 	{ type: 'list', name: 'repo', message: '你想要安装哪个?', choices },
-	// 	{ type: 'confirm', name: ' default', message: 'default (babel, eslint)?'},
-	// 	{ type: 'checkbox', name: 'Manually select features', message: 'Manually select features?', choices, default: 'webpack-simple-template'},
-	// 	{ type: 'confirm', name: 'OK', message: 'Are you OK?'},
-	// ]).then(answers => {
-	// 	console.log(answers);
-	// });
 }
 
+
+/**
+ * 读取路径信息
+ * @param {string} path 路径
+ */
+function getStat(path){
+	return new Promise((resolve, reject) => {
+		fs.stat(path, (err, stats) => {
+			if(err){
+				resolve(false);
+			}else{
+				resolve(stats);
+			}
+		})
+	})
+}
+
+/**
+ * 创建路径
+ * @param {string} dir 路径
+ */
+function mkdir(dir){
+	return new Promise((resolve, reject) => {
+		fs.mkdir(dir, err => {
+			if(err){
+				resolve(false);
+			}else{
+				resolve(true);
+			}
+		})
+	})
+}
+
+
+
+/**
+ * 路径是否存在，不存在则创建
+ * @param {string} dir 路径
+ */
+async function dirExists(dir){
+	let isExists = await getStat(dir);
+	//如果该路径且不是文件，返回true
+	if(isExists && isExists.isDirectory()){
+		return true;
+	}else if(isExists){     //如果该路径存在但是文件，返回false
+		return false;
+	}
+	//如果该路径不存在
+	let tempDir = path.parse(dir).dir;      //拿到上级路径
+	//递归判断，如果上级目录也不存在，则会代码会在此处继续循环执行，直到目录存在
+	let status = await dirExists(tempDir);
+	let mkdirStatus;
+	if(status){
+		mkdirStatus = await mkdir(dir);
+	}
+	return mkdirStatus;
+}

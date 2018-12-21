@@ -1,0 +1,37 @@
+#output:
+#  logstash:
+#    enabled: true
+#    hosts:
+#      - elk:5044
+#    timeout: 15
+#    ssl:
+#      certificate_authorities:
+#      - /etc/pki/tls/certs/logstash-beats.crt
+output.redis:
+   hosts: ["redis-for-logstash"]
+   password: "LotusEshopRedis4Logstash!@#"
+   key: "filebeat"
+   db: 0
+   timeout: 5
+
+filebeat:
+  prospectors:
+    -
+      paths:
+        - /var/log/syslog
+        - /var/log/auth.log
+      document_type: syslog
+    - type: log
+      paths:
+        - "/var/log/nginx/access.log"
+      document_type: nginx-access
+      fields:
+        log_source: nginx-access-lotus-coupon-admin
+        type: nginx-access
+    - type: log
+      paths:
+        - "/var/log/nginx/error.log"
+      document_type: nginx-access
+      fields:
+        log_source: nginx-error-lotus-coupon-admin
+        type: nginx-error

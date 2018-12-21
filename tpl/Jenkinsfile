@@ -1,0 +1,59 @@
+def  paramMap
+def  project='lotus-coupon-admin'
+def  branch='master'
+def  gitCredentialsId="66a43d5e-f652-4c78-b8fb-94098fd931cc"
+def  version
+def  versionRemark
+
+pipeline {
+   agent any
+//  agent {
+//    docker {
+//      image 'kaiwinter/docker-java8-maven'
+//    }
+//  }
+  
+  
+  stages {
+    stage('Preparation') {
+       steps {
+            script {
+		      paramMap = input(message: '请输入版本号', parameters: [string(defaultValue: '', description: '版本号', name: 'VERSION'), string(defaultValue: '', description: '发版描述', name: 'VERSION_REMARK')], submitterParameter: 'USER')
+	          version = paramMap['VERSION']
+	          versionRemark = paramMap['VERSION_REMARK']
+	          if (version == '' || versionRemark == '') {
+	              echo "Please version & version remark is empty"
+	              sh "exit 1"
+	          }
+		    }
+            git([url: "http://113.98.99.171:10080/mina/${project}.git", branch: "${branch}", credentialsId: "${gitCredentialsId}"])
+            withCredentials([usernamePassword(credentialsId: "${gitCredentialsId}", passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+             sh "./make.sh -u ${GIT_USERNAME}  -p ${GIT_PASSWORD} -a checktag -v $version -e prod"  
+          }
+       }    
+    }  
+    stage('Build') {
+      steps {
+       withEnv(["PATH+NODE=${tool name: 'nodejs8', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'}/bin"]) {
+        sh "./make.sh -e prod -v $version -a build"   
+       }
+      }
+    }
+    stage('Deploy') {
+        steps {
+           input "Do you want to deploy to Production Enviroment?"
+             sh "./make.sh -e prod -v $version -a deploy"
+        }
+    }
+    
+    stage('Tag') {
+        steps {
+            withCredentials([usernamePassword(credentialsId: "${gitCredentialsId}", passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                  sh "./make.sh -v ${version} -a tag -e prod -u ${GIT_USERNAME} -p ${GIT_PASSWORD} -m ${versionRemark}"          
+         }
+        }
+        
+    }
+    
+  }
+}
