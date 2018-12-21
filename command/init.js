@@ -30,11 +30,11 @@ module.exports = async (args) => {
 			author: 'Example',
 			names: 'Example',
 		}
-		makeDir(`./${args._[1]}`)
-
+		await makeDir(`./${args._[1]}`)
+		console.log(111)
 		// await inquirer.prompt([{ type: 'checkbox', name: 'name', message: '请选择你需要的依赖?', choices }])
 		console.log(meta, tplPath, `${args._[1]}`)
-		// renderTemplateFiles(meta, tplPath, `${args._[1]}`)
+		renderTemplateFiles(meta, tplPath, `./${args._[1]}`)
 		spinner.succeed('模板生成--成功')
 	} else {
 		let projectName = template.name
