@@ -44,15 +44,6 @@ function create(path, name){
 	renderTemplateFiles(meta, componentsTplPath, `${path}/src/components/${meta.humpName}`)
 	renderTemplateFiles(meta, middleWareTplPath, `${path}/src/handleMiddleWare/${meta.humpName}`)
 	renderTemplateFiles(meta, serverTplPath, `${path}/src/server/${meta.humpName}`)
-	// fs.mkdir(`${path}/src/components/${name}`, err => {
-	//
-	// 	// 创建失败
-	// 	if (err) return error(chalk.red(err));
-	//
-	//
-	//
-	// 	// wirteSageSelector(name)
-	// })
 }
 
 function wirteSageSelector(name){
