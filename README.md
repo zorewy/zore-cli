@@ -28,3 +28,5 @@ npm 安装cli
 dependencies 的依赖是自动安装的
 devDependencies 的依赖是不会自动安装的
 ········
+npm login
+npm publish

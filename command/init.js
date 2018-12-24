@@ -27,10 +27,9 @@ module.exports = async (args) => {
 
 		const tplPath = `${cliPath}/tpl`;
 		const meta = {
-			name : 'Example',
-			description: 'Example',
-			author: 'Example',
-			names: 'Example',
+			name : `${args._[1]}`,
+			description: `${args._[1]}`,
+			author: `${args._[1]}`
 		}
 		await makeDir(`./${args._[1]}`).then(res => {
 			if(!res){
