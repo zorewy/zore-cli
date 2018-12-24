@@ -5,8 +5,15 @@
  */
 let fs = require('fs');
 const { error, log } = require('../lib/logs')
-
+const exec = require('child_process').exec
 module.exports = (args) => {
+	if (!args._[1]){
+		exec('zore list --help', function (error, stdout, stderr){
+			console.log(stdout)
+			process.exit(1)
+		})
+		return
+	}
 	fs.readdir(process.cwd(), function (err, files){
 		let list = files;
 		if (!args.all) {

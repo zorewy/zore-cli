@@ -9,8 +9,16 @@ let path = require('path');
 const {renderTemplateFiles} = require('./../lib/generator')
 const { error, log } = require('../lib/logs')
 const cliPath =path.join(__dirname, '../')
+const exec = require('child_process').exec
+
 module.exports = (args) => {
-	console.log(11, args._[1], process.cwd())
+	if (!args._[1]){
+		exec('zore add --help', function (error, stdout, stderr){
+			console.log(stdout)
+			process.exit(1)
+		})
+		return
+	}
 	let fileName = args._[1]
 	let toPath = './'
 

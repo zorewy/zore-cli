@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+	<meta charset=utf-8>
+	<meta http-equiv=X-UA-Compatible content="IE=Edge">
+	<title>请升级您的浏览器</title>
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+	<style type=text/css>
+		html {
+			background: url("./images/updateBrowser/browser_bg_dc2161cd93.jpg") left top;
+			width: 100%;
+			height: 100%;
+		}
+
+		body {
+			font-family: "Microsoft YaHei", 微软雅黑, "STHei", 华文黑体, "Helvetica Neue", Helvetica, Arial, sans-serif;
+		}
+
+		body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, p {
+			margin: 0;
+			padding: 0;
+		}
+
+		h1, h2, h3, h4, h5, h6, b {
+			font-size: 100%;
+			font-weight: normal;
+		}
+
+		ol, ul {
+			list-style: none;
+		}
+
+		a {
+			cursor: pointer;
+			text-decoration: none;
+		}
+
+		.browser-update .update-window {
+			background: url("./images/updateBrowser/browser_bg_wrapper_95bf26b64e.png") no-repeat left top;
+			clear: both;
+			left: 50%;
+			width: 484px;
+			height: 613px;
+			margin-left: -242px;
+			margin-top: -306.5px;
+			position: absolute;
+			top: 49%;
+		}
+
+		#update {
+			/*display: none;*/
+		}
+
+		.browser-update h1 {
+			color: #212121;
+			font-size: 24px;
+			line-height: 24px;
+			padding: 63px 0 0 0;
+			text-align: center;
+		}
+
+		.browser-update h2 {
+			color: #999;
+			font-size: 14px;
+			line-height: 24px;
+			padding: 24px 57px 15px;
+		}
+
+		.browser-update h3 {
+			color: #666;
+			font-size: 16px;
+			line-height: 16px;
+			padding: 20px 0 40px 0;
+		}
+
+		.browser-update h4 {
+			color: #999;
+			font-size: 14px;
+			line-height: 20px;
+		}
+
+		/* 升级窗口 */
+		.browser-update .update-window ul {
+			margin: 0 -5px;
+			overflow: hidden;
+			padding: 0 57px;
+		}
+
+		.browser-update .update-window li {
+			background: url("./images/updateBrowser/icon_border_74dc80aa0e.png") no-repeat left top;
+			*display: inline;
+			float: left;
+			height: 55px;
+			margin: 0 5px 10px;
+			position: relative;
+			text-align: center;
+			width: 180px;
+			*zoom: 1;
+		}
+
+		.browser-update .update-window li:hover {
+			background-position: 0 -62px;
+		}
+
+		.browser-update .update-window a {
+			background: url("./images/updateBrowser/browser_icon_b0cd0c83fd.png") no-repeat;
+			display: block;
+			height: 100%;
+			width: 100%;
+		}
+
+		.browser-update .ie a {
+			background-position: -190px 0;
+		}
+
+		.browser-update .firefox a {
+			background-position: 0 -65px;
+		}
+	</style>
+	<script>
+		window.onload = function () {
+			// 浏览器判断
+			var browser = {
+				ua: navigator.userAgent.toLowerCase(),
+				ie: function () {
+					return /msie/.test(this.ua);
+				}
+			};
+			if (!browser.ie()) {
+				window.location = '/';
+			}
+		}
+	</script>
+</head>
+<body>
+<div class=browser-update id=update>
+	<div class=update-window><h1>请升级您的浏览器</h1>
+		<h2>尊敬的用户，您现在使用的 Internet Explore 浏览器版本过低，建议您升级至 Internet Explorer 11 版本或使用其他浏览器（ 如：Google Chrome 或 Mozilla
+			Firefox ），以便您能继续访问网站。</h2>
+		<ul>
+			<li class=chrome><a href="//www.google.cn/chrome/browser/desktop/" target=_blank></a></li>
+			<li class=ie><a href=//support.microsoft.com/zh-cn/help/17621/internet-explorer-downloads target=_blank></a>
+			</li>
+			<li class=firefox><a href="//www.mozilla.org/zh-CN/firefox/new/" target=_blank></a></li>
+		</ul>
+	</div>
+</div>
+</body>
+</html>

@@ -7,22 +7,29 @@ const inquirer = require( 'inquirer' )
 const fs = require( 'fs' )
 const path = require( 'path' )
 const chalk = require('chalk')
-const axios = require( 'axios' )
+const help = require( './help' )
 const ora = require( 'ora' )
 const handlebars = require( 'handlebars' )
 const { error, log } = require('../lib/logs')
-// const shell = require('shelljs')
-const exec = require('child_process').exec
+const shell = require('shelljs')
+const {exec} = require('child_process')
 const {renderTemplateFiles, makeDir} = require('./../lib/generator')
 const download = require('download-git-repo')
 const cliPath =path.join(__dirname, '../')
 module.exports = async (args) => {
+	if (!args._[1]){
+		exec('zore init --help', function (error, stdout, stderr){
+			console.log(stdout)
+			process.exit(1)
+		})
+		return
+	}
 	let choices = [ 'webpack-simple-template', 'webpack-react-template', 'webpack-vue-template', 'diy-template'];
 	const template = await inquirer.prompt([{ type: 'list', name: 'name', message: '请选择你需要的版本?', choices }])
 	const spinner = ora('正在处理模板...')
 	if (template.name === 'diy-template') {
 		// 自定义
-		spinner.start()
+
 		const tplPath = `${cliPath}/tpl`;
 		const meta = {
 			name : 'Example',
@@ -30,12 +37,16 @@ module.exports = async (args) => {
 			author: 'Example',
 			names: 'Example',
 		}
-		await makeDir(`./${args._[1]}`)
-		console.log(111)
+		await makeDir(`./${args._[1]}`).then(res => {
+			if(!res){
+				spinner.start()
+				renderTemplateFiles(meta, tplPath, `./${args._[1]}`)
+				spinner.succeed('模板生成--成功')
+			}
+
+		})
 		// await inquirer.prompt([{ type: 'checkbox', name: 'name', message: '请选择你需要的依赖?', choices }])
-		console.log(meta, tplPath, `${args._[1]}`)
-		renderTemplateFiles(meta, tplPath, `./${args._[1]}`)
-		spinner.succeed('模板生成--成功')
+
 	} else {
 		let projectName = template.name
 		spinner.start()

@@ -48,6 +48,9 @@ switch (cmd) {
 	case 'version':
 		require('../command/version')(args)
 		break
+	case 'test':
+		require('../command/test')(args)
+		break
 
 	case 'help':
 		require('../command/help')(args)
